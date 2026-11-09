@@ -9,5 +9,10 @@
     "build": "tsc --noEmit && vite build",
     "test": "vitest run"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@tari-project/ootle": "0.14.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.6",
+    "vitest": "5.1.0"
+  }
 }
