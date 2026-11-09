@@ -1,0 +1,47 @@
+[workspace]
+[package]
+name = "ootip_jar"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "A tip jar for an open-source repository that splits every payout between its maintainers"
+repository = "https://github.com/GeiserX/ootip"
+
+[package.metadata.tari-template]
+tags = ["tips", "donations", "open-source", "payments"]
+category = "payments"
+documentation = "https://github.com/GeiserX/ootip#readme"
+homepage = "https://github.com/GeiserX/ootip"
+
+[dependencies]
+tari_template_lib = { version = "0.38" }
+
+[dev-dependencies]
+tari_template_test_tooling = "0.50.1"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = 's'
+lto = true
+codegen-units = 1
+panic = 'abort'
+strip = true
+
+# The WASM engine is ~10x slower in debug builds; optimise it even for tests.
+[profile.dev.package.wasmer]
+opt-level = 2
+[profile.dev.package.wasmer-compiler]
+opt-level = 2
+[profile.dev.package.wasmer-compiler-cranelift]
+opt-level = 2
+[profile.dev.package.cranelift-codegen]
+opt-level = 2
+[profile.dev.package.cranelift-frontend]
+opt-level = 2
+[profile.dev.package.cranelift-entity]
+opt-level = 2
+
+[build-dependencies]
+tari_ootle_template_build = "0.18"
