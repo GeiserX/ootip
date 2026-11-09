@@ -68,5 +68,8 @@ the tip does not show what else you hold.
   static page cannot do well.
 - Maintainers need an Ootle account address. GitHub logins are not mapped to accounts; the split suggestion
   fills in the shares and leaves the addresses to the jar's creator.
-- The page talks to wallets that inject `window.tari`. At the time of writing those support the Esmeralda
-  testnet; the mainnet template address is filled in once it is published there.
+- The page talks to wallets that inject `window.tari`. On 2026-11-09 the newest Sapient (0.6.17) connects to
+  the page and shows the approval, but Esmeralda rejects the transactions it builds ("Failed to decode
+  transaction"), because Sapient still uses the transaction format from before Ootle 0.50. So the page's
+  transactions are tested through a wallet daemon (`scripts/page-e2e.ts`) until a `window.tari` wallet
+  catches up. The mainnet template address is filled in once it is published there.
