@@ -11,7 +11,7 @@ import {
 import { lit } from "../src/cbor";
 import { configToml, decodeJar, formatTari, parseConfig, parseTari, verify, NETWORKS } from "../src/jar";
 import { pickContributors, toBps } from "../src/split";
-import { createJarInstructions, tipInstructions, TARI_TOKEN } from "../src/wallet";
+import { createJarInstructions, distributeInstructions, tipInstructions, TARI_TOKEN } from "../src/wallet";
 
 const A = "component_" + "ab".repeat(32);
 const B = "component_" + "0f".repeat(32);
@@ -47,6 +47,9 @@ describe("transactions", () => {
     expect(ins[1]).toEqual({ PutLastInstructionOutputOnWorkspace: { key: 0 } });
     expect(ins[2].CallMethod).toMatchObject({ call: { Address: B }, method: "tip" });
     expect(ins[2].CallMethod.args[0]).toEqual({ Workspace: { id: 0, offset: null } });
+  });
+  it("distribute is one argument-less call on the jar", () => {
+    expect(distributeInstructions(B)).toEqual([{ CallMethod: { call: { Address: B }, method: "distribute", args: [] } }]);
   });
   it("create calls new on the template hash", () => {
     const [ins] = createJarInstructions("template_" + "cd".repeat(32), "o/r", [A], [10_000]) as any[];

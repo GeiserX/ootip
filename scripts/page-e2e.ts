@@ -5,7 +5,7 @@
 //   bun scripts/page-e2e.ts --wallet-url http://127.0.0.1:5100/json_rpc --network esmeralda --prefix ootip
 //
 // It uses the accounts scripts/e2e.py created (<prefix>-owner, -maint-a, -maint-b, -tipper); run that first.
-import { createJarInstructions, tipInstructions } from "../web/src/wallet";
+import { createJarInstructions, distributeInstructions, tipInstructions } from "../web/src/wallet";
 import { fetchJar, NETWORKS, verify, type NetworkName } from "../web/src/jar";
 
 const arg = (name: string, dflt: string) => {
@@ -15,7 +15,11 @@ const arg = (name: string, dflt: string) => {
 const url = arg("wallet-url", "http://127.0.0.1:5100/json_rpc");
 const network = arg("network", "esmeralda") as NetworkName;
 const prefix = arg("prefix", "ootip");
+if (!(network in NETWORKS)) throw new Error(`unknown --network ${network}; use one of ${Object.keys(NETWORKS).join(", ")}`);
 const template = arg("template", NETWORKS[network].template ?? "");
+if (!/^template_[0-9a-f]{64}$/.test(template)) {
+  throw new Error(`no Ootip template is known on ${network}; pass --template template_…`);
+}
 
 let id = 0;
 let token: string | null = null;
@@ -70,16 +74,22 @@ const tipped = await send(`${prefix}-tipper`, tipInstructions(tipper.component_a
 console.log(`   tx ${tipped.transaction_id}`);
 
 // Read it back exactly as the page does. The indexer can lag a moment behind finalisation.
-let seen = await fetchJar(network, jar);
-for (let k = 0; k < 10 && seen.tipCount === 0n; k++) {
-  await new Promise((r) => setTimeout(r, 1500));
-  seen = await fetchJar(network, jar);
+// A lagging indexer may not serve the jar at all yet (404), or serve the version before the tip.
+let seen: Awaited<ReturnType<typeof fetchJar>> | null = null;
+for (let k = 0; k < 15 && !(seen && seen.tipCount > 0n); k++) {
+  if (k) await new Promise((r) => setTimeout(r, 1500));
+  try {
+    seen = await fetchJar(network, jar);
+  } catch (e) {
+    if (k === 14) throw e;
+  }
 }
+if (!seen) throw new Error("the indexer never served the jar");
 console.log(`   page view: balance ${seen.balance}, tips ${seen.tipCount}, checks ${JSON.stringify(verify(seen, repo, network))}`);
 if (seen.balance !== amount || seen.tipCount !== 1n) throw new Error("the page does not see the tip");
 
-console.log("-- distribute with the page's instruction");
-const paid = await send(`${prefix}-tipper`, [{ CallMethod: { call: { Address: jar }, method: "distribute", args: [] } }]);
+console.log("-- distribute with distributeInstructions()");
+const paid = await send(`${prefix}-tipper`, distributeInstructions(jar));
 console.log(`   tx ${paid.transaction_id}`);
 const gotA = (await tari("maint-a")) - beforeA;
 const gotB = (await tari("maint-b")) - beforeB;
