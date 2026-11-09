@@ -12,7 +12,7 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const short = (a: string) => `${a.slice(0, 14)}…${a.slice(-6)}`;
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => app.querySelector(sel) as T;
 
-let connected: { account: string; network: string; caps: Record<string, boolean> } | null = null;
+let connected: { account: string; network: string } | null = null;
 
 function status(el: HTMLElement, text: string, kind: "info" | "ok" | "err" = "info") {
   el.textContent = text;
@@ -58,9 +58,8 @@ function renderHome() {
       <div><b>3. Get tipped</b><p>Add the page to your <code>FUNDING.yml</code>. Tips land in the jar; anyone can pay it out to the maintainers.</p></div>
     </section>
     <section class="note">
-      <b>What is private and what is not.</b> A jar's balance, each tip's amount and the split are public.
-      A tip paid from your private balance does not reveal which of your coins paid for it, or how much you hold.
-      The note on a tip is public, so leave it empty for anything personal.
+      <b>What is public.</b> A jar's balance, each tip's amount, the account that sent it and the split are all
+      public. The note on a tip is public too, so leave it empty for anything personal.
     </section>`;
   $<HTMLFormElement>("#find").onsubmit = (e) => {
     e.preventDefault();
@@ -112,17 +111,15 @@ async function renderJar(repo: string) {
       <input id="amount" inputmode="decimal" placeholder="Amount in TARI" required ${safe ? "" : "disabled"} />
       <input id="note" maxlength="253" placeholder="Public note (optional)" ${safe ? "" : "disabled"} />
       <div class="row">
-        <button data-mode="public" ${safe ? "" : "disabled"}>Tip</button>
-        <button data-mode="private" class="alt" ${safe ? "" : "disabled"}>Tip from private balance</button>
+        <button ${safe ? "" : "disabled"}>Tip</button>
       </div>
+      <p class="muted">Your tip's amount, the account it comes from and the note are public.</p>
     </form>
     <p><button id="payout" class="alt" ${jar.balance > 0n ? "" : "disabled"}>Pay out ${formatTari(jar.balance)} TARI to the maintainers</button></p>
     <p id="status" class="status"></p>
     <p class="muted">Jar <code>${jar.address}</code></p>`;
 
   const st = $("#status");
-  let mode = "public";
-  app.querySelectorAll<HTMLButtonElement>("#tip button").forEach((b) => (b.onclick = () => (mode = b.dataset.mode!)));
   $<HTMLFormElement>("#tip").onsubmit = async (e) => {
     e.preventDefault();
     try {
@@ -131,12 +128,8 @@ async function renderJar(repo: string) {
       const note = $<HTMLInputElement>("#note").value;
       if (new TextEncoder().encode(note).length > 253) throw new Error("The note can be at most 253 bytes.");
       const w = await ensureWallet(st, network);
-      if (mode === "private" && w.caps.stealthWithdraw === false) {
-        throw new Error("This wallet account cannot pay from a private balance. Use a local account, or tip from your public balance.");
-      }
       status(st, "Approve the tip in your wallet…");
-      if (mode === "private") await wallet.tipFromPrivate(jar.address, amount, note);
-      else await wallet.tipPublic(w.account, jar.address, amount, note);
+      await wallet.tipPublic(w.account, jar.address, amount, note);
       status(st, `Thank you. ${formatTari(amount)} TARI is in the jar.`, "ok");
       setTimeout(() => renderJar(repo), 2500);
     } catch (err) {
