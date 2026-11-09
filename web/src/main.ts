@@ -113,6 +113,7 @@ async function renderJar(repo: string) {
       <div class="row">
         <button ${safe ? "" : "disabled"}>Tip</button>
       </div>
+      <p class="muted">Your tip's amount, the account it comes from and the note are public.</p>
     </form>
     <p><button id="payout" class="alt" ${jar.balance > 0n ? "" : "disabled"}>Pay out ${formatTari(jar.balance)} TARI to the maintainers</button></p>
     <p id="status" class="status"></p>
