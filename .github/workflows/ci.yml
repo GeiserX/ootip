@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  template:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: template
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: template
+      - name: Unit tests (real Ootle engine)
+        run: cargo test --locked
+      - name: Build the WASM template
+        run: cargo build --locked --release --target wasm32-unknown-unknown
+      - name: Size
+        run: ls -l target/wasm32-unknown-unknown/release/ootip_jar.wasm
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Tests (encoder checked against @tari-project/ootle)
+        run: bun run test
+        env:
+          NODE_OPTIONS: --experimental-wasm-modules
+      - run: bun run build
+
+  ci-ok:
+    if: always()
+    needs: [template, web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All jobs passed
+        run: test "${{ needs.template.result }}" = success && test "${{ needs.web.result }}" = success

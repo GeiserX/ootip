@@ -1,0 +1,10 @@
+reviews:
+  path_filters:
+    - "!**/Cargo.lock"
+    - "!web/bun.lock"
+    - "!web/dist/**"
+  path_instructions:
+    - path: "template/src/**"
+      instructions: "Ootle template code that moves funds. Check access rules, rounding, and that every assert runs before any vault movement."
+    - path: "web/src/**"
+      instructions: "Static page with no backend. It must never hold keys; every transaction goes through the user's window.tari wallet."

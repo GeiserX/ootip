@@ -1,0 +1,4 @@
+# Ootip tip jar for this repository: https://geiserx.github.io/ootip/
+# Testnet demo jar. It moves Esmeralda test TARI only.
+network = "esmeralda"
+jar = "component_a96d239533cd9db01255177cd950c7061cd65ffd7606a32748471b8a3d4849b1"
