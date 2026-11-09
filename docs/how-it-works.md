@@ -2,7 +2,7 @@
 
 ## The template
 
-`template/src/lib.rs` is one Ootle template, `TipJar`. A jar is a component with this state:
+[`template/src/lib.rs`](../template/src/lib.rs) is one Ootle template, `TipJar`. A jar is a component with this state:
 
 | Field | What it holds |
 |---|---|
@@ -40,6 +40,8 @@ indexer, and shows a tip form only when both hold:
 - the jar's `repo` field is this repository (case-insensitive, like GitHub);
 - the jar was created from the published Ootip template, so its code is the code in this repository.
 
+The page code that does these checks is [`web/src/jar.ts`](../web/src/jar.ts).
+
 ## What is public and what is private
 
 Ootle's native TARI is a stealth resource: transfers between private outputs hide the amount and the
@@ -54,7 +56,7 @@ output. For Ootip that means:
 | Your remaining private balance | | yes |
 | Which account signed the tip transaction | yes | |
 
-The second tip button uses the wallet's `withdrawStealthAndExecute`: the wallet spends your private outputs
+The second tip button uses the wallet's `withdrawStealthAndExecute` ([`web/src/wallet.ts`](../web/src/wallet.ts)): the wallet spends your private outputs
 into a bucket and hands that bucket to `tip` in the same transaction. So no public balance of yours moves, and
 the tip does not show what else you hold.
 

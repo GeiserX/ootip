@@ -69,6 +69,10 @@ export function tipInstructions(account: string, jar: string, amount: bigint, no
   ];
 }
 
+export function distributeInstructions(jar: string): Instruction[] {
+  return [callMethod(jar, "distribute", [])];
+}
+
 export function createJarInstructions(template: string, repo: string, accounts: string[], bps: number[]): Instruction[] {
   return [callFunction(template, "new", [lit.text(repo), lit.components(accounts), lit.uints(bps)])];
 }
@@ -107,7 +111,7 @@ export function tipFromPrivate(jar: string, amount: bigint, note: string) {
 }
 
 export function distribute(jar: string) {
-  return submit({ kind: "instructions", instructions: [callMethod(jar, "distribute", [])], maxFee: MAX_FEE });
+  return submit({ kind: "instructions", instructions: distributeInstructions(jar), maxFee: MAX_FEE });
 }
 
 export async function createJar(template: string, repo: string, accounts: string[], bps: number[], signer: string): Promise<string> {
