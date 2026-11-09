@@ -42,23 +42,15 @@ indexer, and shows a tip form only when both hold:
 
 The page code that does these checks is [`web/src/jar.ts`](../web/src/jar.ts).
 
-## What is public and what is private
+## What is public
 
 Ootle's native TARI is a stealth resource: transfers between private outputs hide the amount and the
 receiver. A component's vault is not private, though. Depositing into one goes through a revealed (public)
-output. For Ootip that means:
+output. So for Ootip, all of this is public:
 
-| | Public | Private |
-|---|---|---|
-| The jar's balance, every tip's amount, the split | yes | |
-| The note on a tip | yes | |
-| Which of your coins paid for a tip from your private balance | | yes |
-| Your remaining private balance | | yes |
-| Which account signed the tip transaction | yes | |
-
-The second tip button uses the wallet's `withdrawStealthAndExecute` ([`web/src/wallet.ts`](../web/src/wallet.ts)): the wallet spends your private outputs
-into a bucket and hands that bucket to `tip` in the same transaction. So no public balance of yours moves, and
-the tip does not show what else you hold.
+- the jar's balance, every tip's amount and the split
+- the note on a tip
+- which account signed the tip transaction
 
 ## Known limits
 
@@ -68,8 +60,10 @@ the tip does not show what else you hold.
   static page cannot do well.
 - Maintainers need an Ootle account address. GitHub logins are not mapped to accounts; the split suggestion
   fills in the shares and leaves the addresses to the jar's creator.
-- The page talks to wallets that inject `window.tari`. On 2026-11-09 the newest Sapient (0.6.17) connects to
-  the page and shows the approval, but Esmeralda rejects the transactions it builds ("Failed to decode
-  transaction"), because Sapient still uses the transaction format from before Ootle 0.50. So the page's
-  transactions are tested through a wallet daemon (`scripts/page-e2e.ts`) until a `window.tari` wallet
-  catches up. The mainnet template address is filled in once it is published there.
+- Tips come from your public balance. Sapient 0.9.4 has a request kind, `withdrawStealthAndExecute`, that
+  sounds like it would pay a tip from private funds. In 0.9.4 it withdraws from the account's public balance
+  instead, so the page doesn't offer it.
+- The page talks to wallets that inject `window.tari`. Tipping and paying out work with Sapient 0.9.4 from the
+  Chrome Web Store on Esmeralda (tested 2026-11-09). Sapient 0.6.17, built from its GitHub source, can't: it
+  still builds the transaction format from before Ootle 0.50, and Esmeralda rejects it. The mainnet template
+  address is filled in once it is published there.

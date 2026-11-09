@@ -37,17 +37,11 @@ function need(): Provider {
   return p;
 }
 
-export async function connect(): Promise<{ account: string; network: string; caps: Record<string, boolean> }> {
+export async function connect(): Promise<{ account: string; network: string }> {
   const p = need();
   const [account] = await p.request({ method: "tari_requestAccounts" });
   const network = await p.request({ method: "tari_getNetwork" });
-  let caps: Record<string, boolean> = {};
-  try {
-    caps = await p.request({ method: "tari_getCapabilities" });
-  } catch {
-    // Older wallets: assume only plain instructions.
-  }
-  return { account, network, caps };
+  return { account, network };
 }
 
 // ---- instruction builders (the raw shape the provider takes)
@@ -94,20 +88,6 @@ async function submit(operation: Record<string, unknown>): Promise<any> {
 /** A tip from the account's public balance. */
 export function tipPublic(account: string, jar: string, amount: bigint, note: string) {
   return submit({ kind: "instructions", instructions: tipInstructions(account, jar, amount, note), maxFee: MAX_FEE });
-}
-
-/** A tip paid from the account's private (stealth) outputs, so no public balance moves. */
-export function tipFromPrivate(jar: string, amount: bigint, note: string) {
-  return submit({
-    kind: "withdrawStealthAndExecute",
-    resourceAddress: TARI_TOKEN,
-    amount: amount.toString(),
-    workspaceVarName: "tip",
-    // With no public input, the wallet saves the withdrawn bucket as the first workspace slot (0).
-    followUpInstructions: [callMethod(jar, "tip", [workspace(0), lit.text(note)])],
-    relatedComponents: [jar],
-    maxFee: MAX_FEE,
-  });
 }
 
 export function distribute(jar: string) {

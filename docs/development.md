@@ -56,9 +56,12 @@ python3 scripts/e2e.py --wallet-url http://127.0.0.1:5100/json_rpc --prefix ooti
 
 `--template template_…` reuses a published template instead of publishing a new one.
 
-[`scripts/page-e2e.ts`](../scripts/page-e2e.ts) then checks the page itself. It takes the instructions the
-page builds in [`web/src/wallet.ts`](../web/src/wallet.ts), submits them unchanged through the wallet daemon's
-`transactions.submit_instruction`, and reads the jar back with the page's own [`web/src/jar.ts`](../web/src/jar.ts):
+[`scripts/page-e2e.ts`](../scripts/page-e2e.ts) then checks the instructions the page builds. It takes the
+create, tip and distribute instructions from [`web/src/wallet.ts`](../web/src/wallet.ts), submits them
+unchanged through the wallet daemon's `transactions.submit_instruction`, and reads the jar back with the page's
+own [`web/src/jar.ts`](../web/src/jar.ts). It doesn't cover the page's buttons or the `window.tari` request
+flow. Those were checked on 2026-11-09 in Chromium with Sapient 0.9.4 on Esmeralda, with a script clicking
+the page's buttons and Sapient's approvals. That script is not part of this repo.
 
 ```bash
 bun scripts/page-e2e.ts --wallet-url http://127.0.0.1:5100/json_rpc --network esmeralda --prefix ootip

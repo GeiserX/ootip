@@ -20,7 +20,7 @@ Try it on the Esmeralda testnet: https://geiserx.github.io/ootip/#/GeiserX/ootip
 - `.github/ootip.toml` links the repo to its jar; only someone with write access can commit it
 - The page checks both directions: the file names the jar, and the jar names the repo and runs the Ootip template
 - Split suggestion from GitHub commit counts, bots left out
-- Tip from your public balance, or from your private (stealth) balance through a `window.tari` wallet such as Sapient
+- Tip and pay out through a `window.tari` wallet such as Sapient
 - A static page (18 KB of JavaScript) on GitHub Pages; it reads the public indexer and never holds keys
 
 ## Quick start
@@ -42,7 +42,7 @@ GitHub then shows a Sponsor button that opens your jar. To build and test the te
 
 ## Documentation
 
-- [How it works](docs/how-it-works.md): the template, the link file, what is public and what is private
+- [How it works](docs/how-it-works.md): the template, the link file, what is public
 - [Development](docs/development.md): build, unit tests, the end-to-end run on a local network or the testnet
 - [Known limits](docs/how-it-works.md#known-limits)
 
