@@ -161,6 +161,12 @@ async function renderJar(repo: string) {
 // ---- create a jar
 
 function renderCreate(prefill: string, preferNetwork: string) {
+  // A link that names a network must never fall back to another one: a jar made on the wrong network holds no real tips.
+  if (preferNetwork && !NETWORKS[preferNetwork as NetworkName]?.template) {
+    app.innerHTML = `<h2>Create a jar</h2><p class="status err" id="no-network"></p>`;
+    $("#no-network").textContent = `Jars cannot be created on ${preferNetwork} yet: the template is not published there.`;
+    return;
+  }
   app.innerHTML = `
     <h2>Create a jar</h2>
     <form id="create">
