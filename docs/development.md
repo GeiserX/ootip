@@ -79,4 +79,6 @@ of it the one-time compile charge, so `scripts/e2e.py`'s 2 TARI `max_fee` covers
 Sapient can't publish: `window.tari` has no way to attach the WASM binary to a transaction.
 
 A jar can be created from a link: `#/new?repo=owner/name&network=mainnet` fills in the form, and an account
-row left blank is filled with the connected wallet's account when you click Create.
+row left blank is filled with the connected wallet's account when you click Create. A link that names a network
+with no published template shows a message and no form; the mainnet link works once the template address
+is set in `web/src/jar.ts`.

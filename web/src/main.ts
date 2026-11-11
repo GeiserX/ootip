@@ -27,9 +27,11 @@ async function ensureWallet(statusEl: HTMLElement, network: NetworkName) {
   }
   if (connected.network !== network) {
     status(statusEl, `Asking your wallet to switch to ${network}…`);
-    connected = { ...connected, network: await wallet.switchNetwork(network).catch(() => connected!.network) };
-    // Some wallets keep one account per network; read it again after a switch.
-    if (connected.network === network) connected = await wallet.connect();
+    // After asking for a switch, what we knew about the wallet is stale whether or not the switch worked,
+    // and some wallets keep one account per network. Forget it and read the wallet again.
+    await wallet.switchNetwork(network).catch(() => undefined);
+    connected = null;
+    connected = await wallet.connect();
   }
   if (connected.network !== network) {
     throw new Error(`Your wallet is on ${connected.network}, this jar is on ${network}. Switch networks in the wallet.`);
@@ -225,8 +227,9 @@ function renderCreate(prefill: string, preferNetwork: string) {
       const repo = $<HTMLInputElement>("#repo").value.trim();
       if (!REPO_RE.test(repo)) throw new Error("Write the repository as owner/repo.");
       const network = $<HTMLSelectElement>("#network").value as NetworkName;
-      const trs = [...rows.querySelectorAll("tr:not(:first-child)")];
       const w = await ensureWallet(st, network);
+      // Read the rows after the wallet prompt, so the jar matches the form as it is now.
+      const trs = [...rows.querySelectorAll("tr:not(:first-child)")];
       // One row left blank is the signer's own account, so a solo maintainer only clicks Create.
       const blank = trs.map((tr) => tr.querySelector<HTMLInputElement>(".acc")!).filter((i) => !i.value.trim());
       if (blank.length === 1) blank[0].value = w.account;
