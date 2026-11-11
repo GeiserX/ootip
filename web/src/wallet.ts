@@ -44,6 +44,13 @@ export async function connect(): Promise<{ account: string; network: string }> {
   return { account, network };
 }
 
+/** Asks the wallet to move to another network; resolves to the network it is on afterwards. */
+export async function switchNetwork(network: string): Promise<string> {
+  const p = need();
+  await p.request({ method: "tari_switchNetwork", params: { network } });
+  return p.request({ method: "tari_getNetwork" });
+}
+
 // ---- instruction builders (the raw shape the provider takes)
 
 const callMethod = (component: string, method: string, args: Arg[]): Instruction => ({

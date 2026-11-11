@@ -72,3 +72,11 @@ bun scripts/page-e2e.ts --wallet-url http://127.0.0.1:5100/json_rpc --network es
 `tari publish` (or the wallet daemon's `transactions.publish_template`) costs a fee and cannot be undone. After
 publishing on a network, put the template address in `NETWORKS` in [`web/src/jar.ts`](../web/src/jar.ts), so the page can tell an
 Ootip jar from a look-alike.
+
+On mainnet the wallet daemon runs with `--network mainnet` and reads `https://indexer-a.ootle.tari.com`. The
+publish fee follows https://ootle.tari.com/reference/fees/ : for the 128 KiB template it is about 1 TARI, most
+of it the one-time compile charge, so `scripts/e2e.py`'s 2 TARI `max_fee` covers it. Browser wallets such as
+Sapient can't publish: `window.tari` has no way to attach the WASM binary to a transaction.
+
+A jar can be created from a link: `#/new?repo=owner/name&network=mainnet` fills in the form, and an account
+row left blank is filled with the connected wallet's account when you click Create.
