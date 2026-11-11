@@ -26,6 +26,14 @@ async function ensureWallet(statusEl: HTMLElement, network: NetworkName) {
     connected = await wallet.connect();
   }
   if (connected.network !== network) {
+    status(statusEl, `Asking your wallet to switch to ${network}…`);
+    // After asking for a switch, what we knew about the wallet is stale whether or not the switch worked,
+    // and some wallets keep one account per network. Forget it and read the wallet again.
+    await wallet.switchNetwork(network).catch(() => undefined);
+    connected = null;
+    connected = await wallet.connect();
+  }
+  if (connected.network !== network) {
     throw new Error(`Your wallet is on ${connected.network}, this jar is on ${network}. Switch networks in the wallet.`);
   }
   return connected;
@@ -33,7 +41,10 @@ async function ensureWallet(statusEl: HTMLElement, network: NetworkName) {
 
 function route() {
   const hash = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
-  if (hash === "new" || hash.startsWith("new?")) return renderCreate(new URLSearchParams(hash.split("?")[1] ?? "").get("repo") ?? "");
+  if (hash === "new" || hash.startsWith("new?")) {
+    const q = new URLSearchParams(hash.split("?")[1] ?? "");
+    return renderCreate(q.get("repo") ?? "", q.get("network") ?? "");
+  }
   if (REPO_RE.test(hash)) return renderJar(hash);
   return renderHome();
 }
@@ -151,7 +162,13 @@ async function renderJar(repo: string) {
 
 // ---- create a jar
 
-function renderCreate(prefill: string) {
+function renderCreate(prefill: string, preferNetwork: string) {
+  // A link that names a network must never fall back to another one: a jar made on the wrong network holds no real tips.
+  if (preferNetwork && !NETWORKS[preferNetwork as NetworkName]?.template) {
+    app.innerHTML = `<h2>Create a jar</h2><p class="status err" id="no-network"></p>`;
+    $("#no-network").textContent = `Jars cannot be created on ${preferNetwork} yet: the template is not published there.`;
+    return;
+  }
   app.innerHTML = `
     <h2>Create a jar</h2>
     <form id="create">
@@ -159,11 +176,11 @@ function renderCreate(prefill: string) {
       <label>Network
         <select id="network">${(Object.keys(NETWORKS) as NetworkName[])
           .filter((n) => NETWORKS[n].template)
-          .map((n) => `<option>${n}</option>`)
+          .map((n) => `<option${n === preferNetwork ? " selected" : ""}>${n}</option>`)
           .join("")}</select>
       </label>
       <h3>Split <button type="button" id="suggest" class="alt small">Suggest from commits</button></h3>
-      <p class="muted">Each maintainer needs an Ootle account address (<code>component_…</code>). Shares are in basis points: 10,000 is the whole jar, up to ${MAX_RECIPIENTS} people.</p>
+      <p class="muted">Each maintainer needs an Ootle account address (<code>component_…</code>). Shares are in basis points: 10,000 is the whole jar, up to ${MAX_RECIPIENTS} people. Leave one account blank to use your wallet's own.</p>
       <table class="split" id="rows"><tr><th>Who</th><th>Account</th><th>bps</th><th></th></tr></table>
       <p><button type="button" id="add" class="alt small">Add a maintainer</button> <span id="sum" class="muted"></span></p>
       <button>Create the jar</button>
@@ -210,7 +227,12 @@ function renderCreate(prefill: string) {
       const repo = $<HTMLInputElement>("#repo").value.trim();
       if (!REPO_RE.test(repo)) throw new Error("Write the repository as owner/repo.");
       const network = $<HTMLSelectElement>("#network").value as NetworkName;
+      const w = await ensureWallet(st, network);
+      // Read the rows after the wallet prompt, so the jar matches the form as it is now.
       const trs = [...rows.querySelectorAll("tr:not(:first-child)")];
+      // One row left blank is the signer's own account, so a solo maintainer only clicks Create.
+      const blank = trs.map((tr) => tr.querySelector<HTMLInputElement>(".acc")!).filter((i) => !i.value.trim());
+      if (blank.length === 1) blank[0].value = w.account;
       const accounts = trs.map((tr) => tr.querySelector<HTMLInputElement>(".acc")!.value.trim());
       const bps = trs.map((tr) => parseInt(tr.querySelector<HTMLInputElement>(".bps")!.value, 10));
       if (!accounts.length || accounts.length > MAX_RECIPIENTS) throw new Error(`Add 1 to ${MAX_RECIPIENTS} maintainers.`);
@@ -218,7 +240,6 @@ function renderCreate(prefill: string) {
       if (new Set(accounts).size !== accounts.length) throw new Error("A maintainer appears twice.");
       if (bps.some((b) => !(b > 0 && b <= TOTAL_BPS))) throw new Error("Every share must be at least 1 bps.");
       if (bps.reduce((a, b) => a + b, 0) !== TOTAL_BPS) throw new Error(`Shares must add up to ${TOTAL_BPS} bps.`);
-      const w = await ensureWallet(st, network);
       status(st, "Approve the new jar in your wallet…");
       const jar = await wallet.createJar(NETWORKS[network].template!, repo, accounts, bps, w.account);
       status(st, "Your jar exists. Two commits left:", "ok");
