@@ -5,7 +5,7 @@
     "": {
       "name": "ootip-web",
       "devDependencies": {
-        "@tari-project/ootle": "0.14.0",
+        "@tari-project/ootle": "0.16.0",
         "typescript": "7.0.2",
         "vite": "8.3.6",
         "vitest": "5.1.0",
@@ -53,13 +53,13 @@
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
-    "@tari-project/ootle": ["@tari-project/ootle@0.14.0", "", { "dependencies": { "@tari-project/ootle-ts-bindings": "^1.63.0", "@tari-project/ootle-wasm": "^0.50.0", "@tari-project/ootle-wasm-bor": "^0.50.0" } }, "sha512-hI7/grsr1SsptYVkRrgmlENYSyqFGf0vHyYatfgV4N80LdoOZ12djxNkjLeA7ruaRGPV760YcPldeCEbBq1xDg=="],
+    "@tari-project/ootle": ["@tari-project/ootle@0.16.0", "", { "dependencies": { "@tari-project/ootle-ts-bindings": "^1.65.0", "@tari-project/ootle-wasm": "^0.53.3", "@tari-project/ootle-wasm-bor": "^0.53.3" } }, "sha512-/EFVScsKkFS8Ph2TDELYoqc4GHjnTHa2efqHVXoWTgUlPNjYDh3KV35a2LBJFlOzzdxbQHBSYEeXGf6U7olXuQ=="],
 
-    "@tari-project/ootle-ts-bindings": ["@tari-project/ootle-ts-bindings@1.63.0", "", { "dependencies": { "bech32": "^2.0.0" } }, "sha512-MvN4XbxLoV7RmXedpPx8kOpQntTQosTRpo56YKHwiysPq2vMbqUIQ0Nw9MdIvpolxtTgIfUg3S537CsTA79WmQ=="],
+    "@tari-project/ootle-ts-bindings": ["@tari-project/ootle-ts-bindings@1.65.0", "", { "dependencies": { "bech32": "^2.0.0" } }, "sha512-wyC5BsLQKjqhMFad7uMVeZO1ykbnKe6xS+7wKV8Z/GuHsm5x7V0x0NmzZeNdtPgShGrh/GuBqOqK+FRehBpVTw=="],
 
-    "@tari-project/ootle-wasm": ["@tari-project/ootle-wasm@0.50.1", "", {}, "sha512-zZRGtjcQX6/ck3yeg1pKvbpfN0pzx3HU0jwlY6O9/hwhaUo9QNy/L91EpQG517As4d06jQu8WS6dvDiNIzQhvQ=="],
+    "@tari-project/ootle-wasm": ["@tari-project/ootle-wasm@0.53.5", "", {}, "sha512-PtYjGDFI0kB4IGs/7aYmteZBeMw3g1TfyZo0yL5HDApnyR6Sx/bOZMEDkOHlx2u0jb6P1qePsCAkwgiu/Rx0uw=="],
 
-    "@tari-project/ootle-wasm-bor": ["@tari-project/ootle-wasm-bor@0.50.1", "", {}, "sha512-WgML4CzquynwuRd/vlDEvOdmEQ/X0cyq0dsNBkoZ3JHTUqOoIb8XMxjIX158dmmo54wCKR/adsSlPuXWIS9m9w=="],
+    "@tari-project/ootle-wasm-bor": ["@tari-project/ootle-wasm-bor@0.53.5", "", {}, "sha512-B6w4Lr6UsSdQIqWDjh9p1f5veYhu+qMqrcHNGPdyFFUuYomc7q3zob1dHUiAat1PrgVPkOpwMUz2WfKIT5tsrA=="],
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
