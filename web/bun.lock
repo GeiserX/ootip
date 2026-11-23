@@ -5,7 +5,7 @@
     "": {
       "name": "ootip-web",
       "devDependencies": {
-        "@tari-project/ootle": "0.16.0",
+        "@tari-project/ootle": "0.19.0",
         "typescript": "7.0.2",
         "vite": "8.3.8",
         "vitest": "5.1.0",
@@ -63,13 +63,13 @@
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
-    "@tari-project/ootle": ["@tari-project/ootle@0.16.0", "", { "dependencies": { "@tari-project/ootle-ts-bindings": "^1.65.0", "@tari-project/ootle-wasm": "^0.53.3", "@tari-project/ootle-wasm-bor": "^0.53.3" } }, "sha512-/EFVScsKkFS8Ph2TDELYoqc4GHjnTHa2efqHVXoWTgUlPNjYDh3KV35a2LBJFlOzzdxbQHBSYEeXGf6U7olXuQ=="],
+    "@tari-project/ootle": ["@tari-project/ootle@0.19.0", "", { "dependencies": { "@tari-project/ootle-ts-bindings": "^1.66.0", "@tari-project/ootle-wasm": "^0.55.0", "@tari-project/ootle-wasm-bor": "^0.55.0" } }, "sha512-igSaWGKCdho9o2RJimb69yGK1hNcLtoev3rPkVSGSWClosdZp0tKMPQPlCvv83Aem20albmXKeiMLotx5iF06w=="],
 
-    "@tari-project/ootle-ts-bindings": ["@tari-project/ootle-ts-bindings@1.65.0", "", { "dependencies": { "bech32": "^2.0.0" } }, "sha512-wyC5BsLQKjqhMFad7uMVeZO1ykbnKe6xS+7wKV8Z/GuHsm5x7V0x0NmzZeNdtPgShGrh/GuBqOqK+FRehBpVTw=="],
+    "@tari-project/ootle-ts-bindings": ["@tari-project/ootle-ts-bindings@1.66.0", "", { "dependencies": { "bech32": "^2.0.0" } }, "sha512-F/Rg+NWahuv5p7kVrltz5I5n60Ku+DbK0PLHE/Cw1vvWMSjU7nuuic9XUOowSWDETBgVQRqOJq2ngIduUmH4lA=="],
 
-    "@tari-project/ootle-wasm": ["@tari-project/ootle-wasm@0.53.5", "", {}, "sha512-PtYjGDFI0kB4IGs/7aYmteZBeMw3g1TfyZo0yL5HDApnyR6Sx/bOZMEDkOHlx2u0jb6P1qePsCAkwgiu/Rx0uw=="],
+    "@tari-project/ootle-wasm": ["@tari-project/ootle-wasm@0.55.0", "", {}, "sha512-fkVigkC/GuHN/EPEhcvLiQQKHPD6G3XFIjDI0me8t2WI61KDjPPn8ka7L8zAV3VRNVx1bPya+2eksJbo719eVA=="],
 
-    "@tari-project/ootle-wasm-bor": ["@tari-project/ootle-wasm-bor@0.53.5", "", {}, "sha512-B6w4Lr6UsSdQIqWDjh9p1f5veYhu+qMqrcHNGPdyFFUuYomc7q3zob1dHUiAat1PrgVPkOpwMUz2WfKIT5tsrA=="],
+    "@tari-project/ootle-wasm-bor": ["@tari-project/ootle-wasm-bor@0.55.0", "", {}, "sha512-rpbL+myNUozGkijgWt3y1DT4MH0MK0GTtN/iVAEF1w9ye0QSAS+UFnohhbwcd6n1riT1ebtfcaipz2JfHVflmg=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.5", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-dOGOPxlaNV+G046mZzN+9C0dAcQZeSKcXiVaM0TYy/LM4ttTmgSBDxYfovcYI8Em3+eAbiAYpvWLOv8+ZVRJKA=="],
 
