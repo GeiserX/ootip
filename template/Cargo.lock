@@ -3194,9 +3194,9 @@ dependencies = [
 
 [[package]]
 name = "tari_template_test_tooling"
-version = "0.53.4"
+version = "0.53.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf07b5313e15d965e5aaae3452e87b1774705990a3370494eccf9d005005847a"
+checksum = "342f86b1d4e7aaa8b90afd7dbc4c697ccfbc40fe6cac225b774c5aa10f8d468c"
 dependencies = [
  "anyhow",
  "cargo_toml",
